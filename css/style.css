@@ -270,3 +270,31 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .hero-title .char { transition: color 0.25s var(--ease); }
+
+/* ===== Mobile apps ===== */
+.row-os { margin-right: 1rem; color: var(--accent); font-size: 1.15em; vertical-align: -0.05em; }
+.apps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.6rem; margin-top: 1.6rem; }
+.app {
+    position: relative; display: flex; flex-direction: column; gap: 1rem; padding: 2.8rem;
+    border: 1px solid var(--border); border-radius: 2rem; background: var(--bg-2); overflow: hidden;
+    transition: border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.app::after {
+    content: ''; position: absolute; right: -6rem; top: -6rem; width: 18rem; height: 18rem; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 136, 0.14), transparent 70%); pointer-events: none;
+}
+.app:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 0 36px rgba(0, 255, 136, 0.14); }
+.app-icon {
+    width: 5.6rem; height: 5.6rem; display: grid; place-items: center; border-radius: 1.6rem;
+    background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.35);
+    color: var(--accent); font-size: 2.6rem;
+}
+.app-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.2rem, 2.8vw, 2.8rem); letter-spacing: -0.02em; margin-top: 0.8rem; }
+.app-desc { color: var(--text-2); font-size: 1.6rem; line-height: 1.55; flex: 1; }
+.app-tag {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 0.7rem;
+    padding: 0.5rem 1.3rem; border-radius: 999px; border: 1px solid var(--border);
+    font-size: 1.3rem; font-weight: 600; color: var(--text);
+}
+.app-tag i { color: var(--accent); }
+@media (max-width: 760px) { .apps { grid-template-columns: 1fr; } .app { padding: 2.2rem; } }
