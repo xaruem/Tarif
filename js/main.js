@@ -4,10 +4,10 @@
     /* ===== Тексты RU / UZ ===== */
     const I18N = {
         ru: {
-            title: 'Маннапов Улугбек | Сайты, боты, дизайн',
-            desc: 'Создание сайтов, Telegram-ботов и дизайнерских карточек для маркетплейсов. Цены на услуги.',
+            title: 'Маннапов Улугбек | Сайты, боты, приложения',
+            desc: 'Создание сайтов, Telegram-ботов и мобильных приложений Android и iOS. Цены на услуги.',
             name: 'Маннапов Улугбек',
-            hero_sub: 'Сайты, Telegram-боты и дизайн карточек',
+            hero_sub: 'Сайты, Telegram-боты и мобильные приложения',
             cta_prices: 'Смотреть цены',
             cta_projects: 'Проекты в Telegram',
             prices_title: 'Цены на услуги',
@@ -23,12 +23,14 @@
             b_simple: 'Telegram-бот (простой: меню, заявки)',
             b_pay: 'Telegram-бот (оплата, база данных)',
             b_biz: 'Бот для бизнеса (CRM, интеграции)',
-            g_cards: 'Дизайнерские карточки',
-            g_cards_sub: 'для маркетплейсов и соцсетей',
-            c_1: '1 карточка товара',
-            c_5: '5 карточек',
-            c_10: '10 карточек',
-            c_full: 'Полное оформление магазина',
+            g_apps: 'Мобильные приложения',
+            g_apps_sub: 'Android и iOS',
+            a_android: 'Android-приложение',
+            a_ios: 'iOS-приложение',
+            ready_title: 'Уже готовые приложения',
+            app_leon: 'Автоматизация Instagram: меньше рутины, больше охвата.',
+            app_sim: 'Скрывает видео, фото, файлы и приложения — всё под защитой.',
+            app_tag: 'Android',
             negotiable: 'Договорная цена',
             t_time: 'Сроки выполнения: от 3 до 14 дней',
             t_prepay: 'Предоплата: 50%',
@@ -36,10 +38,10 @@
             channel_title: 'Примеры работ — в канале с проектами'
         },
         uz: {
-            title: 'Mannapov Ulug‘bek | Saytlar, botlar, dizayn',
-            desc: 'Saytlar, Telegram-botlar va marketplace uchun dizayner kartochkalari yaratish. Xizmatlar narxlari.',
+            title: 'Mannapov Ulug‘bek | Saytlar, botlar, ilovalar',
+            desc: 'Saytlar, Telegram-botlar va Android hamda iOS mobil ilovalar yaratish. Xizmatlar narxlari.',
             name: 'Mannapov Ulug‘bek',
-            hero_sub: 'Saytlar, Telegram-botlar va kartochkalar dizayni',
+            hero_sub: 'Saytlar, Telegram-botlar va mobil ilovalar',
             cta_prices: 'Narxlarni ko‘rish',
             cta_projects: 'Telegramdagi loyihalar',
             prices_title: 'Xizmatlar narxlari',
@@ -55,12 +57,14 @@
             b_simple: 'Telegram-bot (oddiy: menyu, arizalar)',
             b_pay: 'Telegram-bot (to‘lov, ma’lumotlar bazasi)',
             b_biz: 'Biznes uchun bot (CRM, integratsiyalar)',
-            g_cards: 'Dizayner kartochkalari',
-            g_cards_sub: 'marketplace va ijtimoiy tarmoqlar uchun',
-            c_1: '1 ta mahsulot kartochkasi',
-            c_5: '5 ta kartochka',
-            c_10: '10 ta kartochka',
-            c_full: 'Do‘konni to‘liq bezash',
+            g_apps: 'Mobil ilovalar',
+            g_apps_sub: 'Android va iOS',
+            a_android: 'Android-ilova',
+            a_ios: 'iOS-ilova',
+            ready_title: 'Tayyor ilovalar',
+            app_leon: 'Instagramni avtomatlashtirish: kam rutina, ko‘proq qamrov.',
+            app_sim: 'Video, foto, fayl va ilovalarni yashiradi — hammasi himoyada.',
+            app_tag: 'Android',
             negotiable: 'Kelishilgan narx',
             t_time: 'Bajarish muddati: 3 dan 14 kungacha',
             t_prepay: 'Oldindan to‘lov: 50%',
@@ -88,6 +92,10 @@
     const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
 
     function priceHTML(row, p) {
+        if (row.dataset.usd) {
+            const u = `<b>$${fmt(row.dataset.usd * p)}</b>`;
+            return lang === 'ru' ? `<em>от</em> ${u}` : `${u} <em>dan</em>`;
+        }
         const from = row.dataset.from;
         if (!from) return null;
         const a = `<b>${fmt(from * p)}</b>`;
@@ -295,7 +303,7 @@
         tl.to($('.row-line', row), { scaleX: 1, duration: 0.9, ease: 'power3.inOut' }, 0)
           .to($('.row-name', row), { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.12)
           .to($('.row-price', row), { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.22);
-        if (row.dataset.from) {
+        if (row.dataset.from || row.dataset.usd) {
             const proxy = { p: 0 };
             tl.to(proxy, { p: 1, duration: 1.4, ease: 'power2.out', onUpdate: () => { row._p = proxy.p; renderPrice(row); } }, 0.22);
         }
@@ -306,7 +314,7 @@
         gsap.set($$('.row-name'), { opacity: 0, x: -28 });
         gsap.set($$('.row-price'), { opacity: 0, x: 28 });
         rows.forEach((row) => {
-            if (row.dataset.from) { row._p = 0; renderPrice(row); }
+            if (row.dataset.from || row.dataset.usd) { row._p = 0; renderPrice(row); }
             ScrollTrigger.create({ trigger: row, start: 'top 92%', once: true, onEnter: () => revealRow(row) });
         });
 
@@ -320,6 +328,7 @@
         });
 
         gsap.from('.group-sub', { scrollTrigger: { trigger: '.group-sub', start: 'top 90%', once: true }, opacity: 0, x: -20, duration: 0.6 });
+        gsap.from('.app', { scrollTrigger: { trigger: '.apps', start: 'top 88%', once: true }, y: 50, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out', clearProps: 'transform,opacity' });
         gsap.from('.terms li', { scrollTrigger: { trigger: '.terms', start: 'top 88%', once: true }, y: 40, opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out' });
         gsap.fromTo('.channel',
             { clipPath: 'inset(0 100% 0 0 round 24px)' },
